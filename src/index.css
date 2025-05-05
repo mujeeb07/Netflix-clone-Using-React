@@ -1,0 +1,19 @@
+@import "tailwindcss";
+@layer utilities {
+    .banner-img {
+        -webkit-mask-image: linear-gradient(to right, transparent, black 75%);
+        mask-image: linear-gradient(to right, transparent, black 75%);
+    }
+
+    .scrollbar-hidden::-webkit-scrollbar {
+        display: none;
+      }
+    
+      .scrollbar-hidden {
+        scrollbar-width: none;
+        -ms-overflow-style: none; 
+      }
+}
+:root {
+    font-family: 'poppins';
+}
