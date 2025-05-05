@@ -25,22 +25,43 @@ function Player() {
   useEffect(() => {
     fetch(`https://api.themoviedb.org/3/movie/${id}/videos?language=en-US`, options)
     .then(response => response.json())
-    .then(response => setApiData(response.results[0]))
-    .catch(err => console.error(err));
-  }, [])
+    .then(data => {
+      const trailer = data.results.find(
+        (video) => video.type === "Trailer" && video.site === "YouTube"
+      );
+      if(trailer) {
+        setApiData(trailer);
+      } else {
+        setApiData(null)
+      }
+    })
+    .catch(err => console.error(err), setApiData(null));
+  }, [id])
   
 
 
   return (
     <div className='flex flex-col content-center items-center h-screen'>
-      <img src={back_arrow_icon} alt="" className='absolute cursor-pointer top-5 left-5 w-12' onClick={() => {navigate(-2)}}/>
-      <iframe className='rounded-md' width="90%" height="90%" src={`https://www.youtube.com/embed/${apiData.key}`} 
-      title='trailer' frameBorder='0' allowFullScreen></iframe>
-      <div className="flex items-center content-between w-[90%] player-info">
-        <p>{apiData.published_at.slice(0, 10)}</p>
-        <p>{apiData.name}</p>
-        <p>{apiData.type}</p>
-      </div>
+      <img src={back_arrow_icon} 
+        alt="Back" className='absolute cursor-pointer top-5 left-5 w-12' 
+        onClick={() => {navigate(-2)}}/>
+
+      {apiData ? (
+        <>
+          <iframe 
+            className='rounded-md' width="90%" height="90%" 
+            src={`https://www.youtube.com/embed/${apiData.key}`} 
+            title='trailer' frameBorder='0' allowFullScreen>
+          </iframe>
+          <div className="flex items-center content-between w-[90%] player-info">
+            <p>{apiData.published_at.slice(0, 10)}</p>
+            <p>{apiData.name}</p>
+            <p>{apiData.type}</p>
+          </div>
+        </>
+      ) : ( 
+        <p className='text-white mt-20 text-lg'>Trailer not available for this movie.</p>
+       )}
     </div>
   )
 }
